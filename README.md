@@ -13,6 +13,12 @@ Factory Meta Builder is the **L0 (Level Zero)** layer of the AI Software Factory
 3.  **L2 Factory (Engine)**: The Working System (Expert Systems + Orchestrators). Executes the actual software engineering tasks.
 4.  **L3 Software**: The Final Product (Applications, Modules, APIs).
 
+## 🌊 Flow Mode: The Operational Engine
+Unlike traditional software development, the Software Factory **operates exclusively in Flow Mode**:
+- **No Sprints**: Time-boxed iterations are replaced by a continuous, pull-based delivery chain.
+- **Asynchronous Execution**: Tasks move through the factory as they are ready, with no artificial waiting for "sprint starts."
+- **Atomic Work Units**: Every task is granular, traceable, and validated independently.
+
 ## 🚀 Key Features
 
 - **FDL (Factory Definition Language)**: Standardized JSON/YAML schemas for defining factory blueprints.

@@ -25,6 +25,7 @@ Every operational engine (Orchestrator, Expert System, QA Agent) produced by the
 
 ## 5. Flow-Centric Design [CRITICAL]
 All components MUST be designed to support the **Pull-based Flow**:
+- **Explicit Rejection of Sprints**: Time-boxing (Sprints/Iterations) is forbidden. The factory must support a continuous 24/7 asynchronous delivery model.
 - **Atomic Work Units**: Tasks should be granular enough to be completed in one SDLC cycle (Lead Time < 4 hours).
 - **JIT Specs**: Requirement specifications (`specs.md`) must be generated ONLY when the task is pulled from the backlog.
 - **Double-Loop Quality**:
