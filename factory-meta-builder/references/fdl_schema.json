@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FDL (Framework Description Language) Schema",
+  "description": "Universal schema for describing ANY software framework to a Builder Engine.",
+  "type": "object",
+  "required": ["meta", "environment", "dependencies", "lifecycle"],
+  "properties": {
+    "version": { "type": "string", "default": "1.0" },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Framework Name (e.g., Odoo, React, Rust)" },
+        "version": { "type": "string" },
+        "language_family": { "type": "string" }
+      }
+    },
+    "environment": {
+      "type": "object",
+      "properties": {
+        "os_base": { "type": "string", "description": "Base OS for Docker (e.g., 'debian:bookworm-slim')" },
+        "languages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "version": { "type": "string" }
+            }
+          },
+          "description": "Required languages (e.g., Python 3.10, Node 18)"
+        },
+        "system_packages": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "apt-get install list (e.g., 'libxml2-dev')"
+        }
+      }
+    },
+    "dependencies": {
+      "type": "object",
+      "properties": {
+        "package_manager_type": {
+          "enum": ["pip", "npm", "cargo", "go", "gem"],
+          "description": "The package manager to control"
+        },
+        "global_deps_file": { "type": "string" }
+      }
+    },
+    "lifecycle": {
+      "type": "object",
+      "description": "Executable commands that drive the Builder Engine.",
+      "required": ["test"],
+      "properties": {
+        "build": { "type": "string", "description": "Compile/Package command" },
+        "test": { "type": "string", "description": "The 'Truth Gate' verification command" },
+        "lint": { "type": "string", "description": "Code quality check" },
+        "format": { "type": "string" },
+        "dev_server": { "type": "string", "description": "Command to start local dev environment" }
+      }
+    },
+    "architecture": {
+      "type": "object",
+      "description": "Framework-specific structural rules."
+    },
+    "database": {
+      "type": "object",
+      "properties": {
+        "primary_driver": { "type": "string" }
+      }
+    }
+  }
+}

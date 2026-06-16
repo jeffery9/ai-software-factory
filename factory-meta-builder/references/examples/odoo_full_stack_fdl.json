@@ -1,0 +1,62 @@
+{
+  "version": "1.0",
+  "meta": {
+    "name": "Odoo Framework (Full Stack)",
+    "version": "18.0 / Current Stable",
+    "language_family": "Python/JS/XML"
+  },
+  "environment": {
+    "os_base": "debian:bookworm-slim",
+    "languages": [
+      { "name": "python", "version": "3.11" }
+    ],
+    "system_packages": [
+      "git",
+      "gcc",
+      "libxml2-dev",
+      "libxslt1-dev",
+      "libpq-dev",
+      "libldap2-dev",
+      "libsasl2-dev",
+      "pkg-config"
+    ]
+  },
+  "dependencies": {
+    "package_manager_type": "pip",
+    "install_command": "pip install --upgrade pip setuptools wheel && pip install -r requirements.txt",
+    "framework_installer": "git clone https://github.com/odoo/odoo.git"
+  },
+  "lifecycle": {
+    "build": "python3 odoo-bin -d ${DB_NAME} --load=web,base --stop-after-init",
+    "test": "pytest-odoo tests/ --cov=odoo/addons/",
+    "lint": "pylint --rcfile=.pylintrc $(git ls-files '*.py')",
+    "format": "black -l 120 odoo/ tests/ && autopep8 -i -a -r --max-line-length=120 .",
+    "dev_server": "python3 odoo-bin --config=./odoo.conf"
+  },
+  "architecture": {
+    "structure_rules": [
+      "Every module must have __manifest__.py (JSON format)",
+      "Mandatory keys in manifest: name, version, data, dependencies",
+      "Views must use XML IDs with correct naming convention (module.action_name)"
+    ],
+    "coding_standards": [
+      "Strict ORM Usage: No raw SQL for business logic.",
+      "SMP Protocol: Use Modify actions only.",
+      "UX First Verification Priority: UI > RPC > DB.",
+      "Odoo-bin Mandatory: All instance operations must use odoo-bin."
+    ]
+  },
+  "database": {
+    "primary_driver": "postgresql",
+    "migration_tool": "odoo-18.0/scripts/dbmanage.py (or custom migration scripts)",
+    "seed_commands": ["psql -h ${DB_HOST} -U ${DB_USER} -d ${DB_NAME} -f base_seed.sql"]
+  },
+  "deployment": {
+    "service_type": "web_daemon",
+    "ports": [8069],
+    "docker_config": {
+      "entrypoint": ["python3", "odoo-bin"],
+      "expose_env": ["DB_HOST", "DB_USER", "DB_PASSWORD", "ODOO_CONFIG"]
+    }
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "version": "1.0",
+  "meta": {
+    "name": "Odoo Framework Family (Polyglot Support)",
+    "description": "Universal manifest supporting Odoo versions 16, 17, 18, and 19.",
+    "language_family": "Python/JS/XML"
+  },
+  "version_matrix": {
+    "default": "18.0",
+    "supported_versions": [
+      {
+        "tag": "16.0",
+        "requirements": { "python_min": "3.7", "db_driver": "psycopg2" },
+        "specific_notes": ["Legacy OWL structure", "Standard XML RPC"]
+      },
+      {
+        "tag": "17.0",
+        "requirements": { "python_min": "3.8", "db_driver": "psycopg2" },
+        "specific_notes": ["Improved ORM caching", "OWL Component evolution"]
+      },
+      {
+        "tag": "18.0",
+        "requirements": { "python_min": "3.10", "db_driver": "psycopg2-binary" },
+        "specific_notes": ["Current Stable", "New OWL architecture"]
+      },
+      {
+        "tag": "19.0",
+        "requirements": { "python_min": "3.11", "db_driver": "psycopg2-binary" },
+        "specific_notes": ["Future Release Candidate", "Refined ORM constraints"]
+      }
+    ]
+  },
+  "environment": {
+    "os_base": "debian:bookworm-slim",
+    "languages": [
+      { "name": "python", "version": ">=3.10" },
+      { "name": "node", "version": ">=16" } 
+    ],
+    "system_packages": [
+      "git", "gcc", "libxml2-dev", "libxslt1-dev", "libpq-dev", "libldap2-dev", "libsasl2-dev", "pkg-config", "wkhtmltopdf"
+    ]
+  },
+  "dependencies": {
+    "package_manager_type": "pip",
+    "install_command_template": "pip install --upgrade pip && pip install -r {requirements_file}",
+    "framework_clone_url": "git@github.com:odoo/odoo.git",
+    "branch_strategy": "dynamic" 
+  },
+  "lifecycle": {
+    "build": "python3 odoo-bin -d ${DB_NAME} --stop-after-init --load=${MODULES}",
+    "test": "pytest-odoo tests/ --cov=odoo/addons/",
+    "lint": "pylint --rcfile=.pylintrc",
+    "format": "black -l 120 odoo/ tests/ && autopep8 -i -a -r --max-line-length=120 .",
+    "dev_server": "python3 odoo-bin --config=./odoo.conf"
+  },
+  "architecture": {
+    "structure_rules": [
+      "__manifest__.py is mandatory.",
+      "Mandatory keys: name, version, data, dependencies, demo."
+    ],
+    "coding_standards": [
+      "UX First Verification Priority.",
+      "Odoo-bin Mandatory for all instance operations.",
+      "SMP Protocol (Minimal modifications)."
+    ]
+  },
+  "deployment": {
+    "service_type": "web_daemon",
+    "ports_range": [8069, 8079],
+    "docker_config": {
+      "entrypoint": ["python3", "odoo-bin"],
+      "expose_env": ["DB_HOST", "DB_USER", "DB_PASSWORD"]
+    }
+  }
+}

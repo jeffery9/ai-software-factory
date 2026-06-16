@@ -1,0 +1,41 @@
+{
+  "version": "1.0",
+  "meta": {
+    "name": "Odoo Framework",
+    "version": "18.0",
+    "language_family": "Python"
+  },
+  "environment": {
+    "os_base": "debian:bookworm-slim",
+    "languages": [
+      { "name": "python", "version": "3.10" }
+    ],
+    "system_packages": ["libxml2-dev", "libxslt1-dev", "libpq-dev", "gcc"]
+  },
+  "dependencies": {
+    "package_manager_type": "pip",
+    "global_deps_file": "requirements.txt"
+  },
+  "lifecycle": {
+    "build": "python3 odoo-bin -d ${DB_NAME} --stop-after-init",
+    "test": "coverage run -m pytest && coverage report",
+    "lint": "pylint odoo/ --rcfile=.pylintrc",
+    "format": "autopep8 --in-place $(git diff --name-only)",
+    "dev_server": "python3 odoo-bin --config=$DB_NAME"
+  },
+  "architecture": {
+    "structure_rules": [
+      "Every module must have __manifest__.py",
+      "Mandatory fields: name, version, data"
+    ],
+    "coding_standards": [
+      "Use orm.translate for fields",
+      "Avoid raw SQL in modules",
+      "Inherit models using super()"
+    ]
+  },
+  "database": {
+    "primary_driver": "postgresql",
+    "migration_tool": "odoo-db-manager"
+  }
+}

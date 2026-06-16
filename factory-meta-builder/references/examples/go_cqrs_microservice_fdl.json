@@ -1,0 +1,54 @@
+{
+  "version": "1.0",
+  "meta": {
+    "name": "Go CQRS Microservices Framework",
+    "version": "latest",
+    "language_family": "Systems/Web"
+  },
+  "environment": {
+    "os_base": "golang:1.21-alpine",
+    "languages": [
+      { "name": "go", "version": ">=1.20" }
+    ],
+    "system_packages": [
+      "git",
+      "gcc"
+    ]
+  },
+  "dependencies": {
+    "package_manager_type": "go_mod",
+    "install_command": "go mod download && go mod verify"
+  },
+  "lifecycle": {
+    "build": "CGO_ENABLED=0 GOOS=linux go build -o bin/service ./cmd/main.go",
+    "test": "go test -v -count=1 -coverprofile=coverage.out ./...",
+    "lint": "golangci-lint run ./...",
+    "format": "gofmt -w .",
+    "dev_server": "go run cmd/main.go"
+  },
+  "architecture": {
+    "structure_rules": [
+      "Must follow Standard Go Project Layout (cmd/, internal/, pkg/)",
+      "CQRS Separation: logic must be split into 'command/' and 'query/' modules",
+      "No circular dependencies allowed between microservices"
+    ],
+    "coding_standards": [
+      "Use interface{} for dependency injection",
+      "Handle errors explicitly, no panic in production code",
+      "Define DTOs in a separate 'dto' folder"
+    ]
+  },
+  "database": {
+    "primary_driver": "postgresql",
+    "migration_tool": "golang-migrate",
+    "read_replica_driver": "redis (Caching)"
+  },
+  "deployment": {
+    "service_type": "web_daemon",
+    "ports": [8080, 8081],
+    "docker_config": {
+      "entrypoint": ["bin/service"],
+      "expose_env": ["GO_ENV", "DB_HOST", "REDIS_ADDR"]
+    }
+  }
+}
